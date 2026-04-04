@@ -1,5 +1,7 @@
 package TaskManager.service;
 
+import TaskManager.exception.InvalidIndexException;
+import TaskManager.exception.InvalidTitleException;
 import TaskManager.model.Priority;
 import TaskManager.model.Task;
 
@@ -26,20 +28,24 @@ public class TaskManager {
     // gibt die Task basierend auf dem Index aus (1 basiert)
     public Task getTask(int index){
         if(index < 1 || index > tasksList.size()){
-            throw new IllegalArgumentException("Ungültiger Index!");
+            throw new InvalidIndexException("Ungültiger Index!");
         }
         return tasksList.get(index - 1);
     }
 
     // löscht eine Task basierend auf dem Index
-    public void deleteTask(int index){
+    public void deleteTask(int index) throws IllegalArgumentException{
         Task task = getTask(index);
         tasksList.remove(task);
     }
 
     // ändert den Zustand (erledigt / noch offen)
-    public void toggle(int index){
+    public void toggle(int index) throws InvalidIndexException{
         getTask(index).toggleDone();
+    }
+
+    public void changeTitle(int index, String title) throws InvalidIndexException, InvalidTitleException {
+        getTask(index).setTitle(title);
     }
 
     // druckt alle vorhandenen Tasks aus

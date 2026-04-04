@@ -1,5 +1,7 @@
 package TaskManager.model;
 
+import TaskManager.exception.InvalidTitleException;
+
 public class Task {
     private String title;
     private boolean done;
@@ -27,7 +29,7 @@ public class Task {
 
     public void setTitle(String title){
         if(title == null || title.isBlank()){
-            throw new IllegalArgumentException("Fehler bei der Vergabe des Titels");
+            throw new InvalidTitleException("Fehler bei der Vergabe des Titels");
         }
         this.title = title;
     }
@@ -44,9 +46,6 @@ public class Task {
         return done ? "[✓]" : "[ ]";
     }
 
-    /* checkt ob die Task abgeschlossen ist oder nicht basierend auf dem Index
-    intern Index 0 basiert, im Task Manager ab 1. Deswegen index - 1
-     */
     public void toggleDone(){
         done = !done;
     }

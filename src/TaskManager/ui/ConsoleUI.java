@@ -1,4 +1,6 @@
 package TaskManager.ui;
+import TaskManager.exception.InvalidIndexException;
+import TaskManager.exception.InvalidTitleException;
 import TaskManager.model.Priority;
 import TaskManager.model.Task;
 import TaskManager.service.TaskManager;
@@ -18,6 +20,11 @@ public class ConsoleUI {
         System.out.println();
         System.out.println("Weiter mit Enter...");
         scanner.nextLine();
+    }
+
+    private void noTasksAndOutput(){
+        System.out.println("Keine Tasks vorhanden");
+        waitForEnter();
     }
 
     private int readInt(){
@@ -48,22 +55,19 @@ public class ConsoleUI {
                 addTask();
             }else if(input == 2){
                 if(taskManager.isEmpty()){
-                    System.out.println("Keine Tasks vorhanden");
-                    waitForEnter();
+                    noTasksAndOutput();
                 }else{
                     editTask();
                 }
             }else if(input == 3) {
                 if(taskManager.isEmpty()){
-                    System.out.println("Keine Tasks vorhanden");
-                    waitForEnter();
+                    noTasksAndOutput();
                 }else{
                     deleteTask();
                 }
             }else if(input == 4){
                 if(taskManager.isEmpty()){
-                    System.out.println("Keine Tasks vorhanden");
-                    waitForEnter();
+                    noTasksAndOutput();
                 }else{
                     System.out.println("Tasks:");
                     taskManager.printAllTasks();
@@ -71,8 +75,7 @@ public class ConsoleUI {
                 }
             }else if(input == 5){
                 if(taskManager.isEmpty()){
-                    System.out.println("Keine Tasks vorhanden");
-                    waitForEnter();
+                    noTasksAndOutput();
                 }else{
                     System.out.println("Tasks:");
                     taskManager.printUnfinishedTasks();
@@ -88,7 +91,7 @@ public class ConsoleUI {
         }
     }
 
-    public void addTask(){
+    private void addTask(){
         System.out.println("Titel: ");
         String title = scanner.nextLine();
 
@@ -106,7 +109,7 @@ public class ConsoleUI {
         waitForEnter();
     }
 
-    public void editTask(){
+    private void editTask(){
         System.out.println("Tasks:");
         taskManager.printAllTasks();
         System.out.println("Bitte den Index der Task eingeben");
@@ -119,13 +122,25 @@ public class ConsoleUI {
         int input = readInt();
 
         if(input == 1){
-            taskManager.toggle(index);
-            waitForEnter();
+            try{
+                taskManager.toggle(index);
+            }catch(InvalidIndexException e){
+                System.out.println("Fehler: " + e.getMessage());
+            }finally {
+                waitForEnter();
+            }
         }else if(input == 2){
             System.out.println("Neuen Titel eingeben: ");
             String title = scanner.nextLine();
-            taskManager.getTask(index).setTitle(title);
-            waitForEnter();
+            try{
+                taskManager.changeTitle(index, title);
+            }catch(InvalidTitleException e){
+                System.out.println("Fehler: " + e.getMessage());
+            }catch(InvalidIndexException e){
+                System.out.println("Fehler: " + e.getMessage());
+            }finally {
+                waitForEnter();
+            }
         }
         else{
             System.out.println("Fehlerhafte Eingabe");
@@ -133,13 +148,18 @@ public class ConsoleUI {
         }
     }
 
-    public void deleteTask(){
+    private void deleteTask(){
         System.out.println("Tasks:");
         taskManager.printAllTasks();
         System.out.println("Bitte Index der Task eingeben");
         int index = readInt();
 
-        taskManager.deleteTask(index);
-        waitForEnter();
+        try{
+            taskManager.deleteTask(index);
+        }catch(IllegalArgumentException e){
+            System.out.println("Fehler: " + e.getMessage());
+        }finally {
+            waitForEnter();
+        }
     }
 }
