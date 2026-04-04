@@ -1,2 +1,0 @@
-Homework,false,LOW
-Walk the dog,false,HIGH
