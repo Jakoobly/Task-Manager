@@ -1,5 +1,6 @@
 package TaskManager.model;
 
+import TaskManager.exception.InvalidPriorityException;
 import TaskManager.exception.InvalidTitleException;
 
 public class Task {
@@ -13,10 +14,10 @@ public class Task {
 
     public Task(String title, Priority priority){
         if(title == null || title.isBlank()){
-            throw new IllegalArgumentException("Fehler bei der Vergabe des Titels");
+            throw new InvalidTitleException("Fehler bei der Vergabe des Titels");
         }
         if(priority == null){
-            throw new IllegalArgumentException("Fehler bei der Vergabe der Priority");
+            throw new InvalidPriorityException("Fehler bei der Vergabe der Priority");
         }
         this.title = title;
         this.priority = priority;
