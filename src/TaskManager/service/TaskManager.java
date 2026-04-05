@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class TaskManager {
-    private List<Task> tasksList = new ArrayList<>();
+    private final List<Task> tasksList = new ArrayList<>();
 
     // fügt eine Tast hinzu
     public void addTask(Task task){
@@ -57,13 +57,13 @@ public class TaskManager {
     public void moveTask(int fromIndex, int toIndex){
         if(fromIndex < 1 || fromIndex > tasksList.size()
         || toIndex < 1 || toIndex > tasksList.size()){
-            throw new IllegalArgumentException("Ungültiger Index");
+            throw new InvalidIndexException("Ungültiger Index");
         }
         Task task = tasksList.remove(fromIndex -1);
         tasksList.add(toIndex -1, task);
     }
 
-    // druckt nur Tasks mit hoher Priorität aus
+    // gibt nur Tasks mit hoher Priorität zurück
     public List<Task> getHighPriorityTasks(){
         return tasksList.stream()
                 .filter(task -> task.getPriority() == Priority.HIGH)
@@ -91,20 +91,5 @@ public class TaskManager {
         return tasksList.stream()
                 .filter(task -> !task.isDone())
                 .count();
-    }
-
-    // sichert alle Tasks in einer Datei
-    public void saveTasksToFile(String filename){
-        try(BufferedWriter writer = new BufferedWriter(new FileWriter(filename))){
-            for(Task task : tasksList){
-                String line = task.getTitle() + ","
-                        + task.isDone() + ","
-                        + task.getPriority();
-                writer.write(line);
-                writer.newLine();
-            }
-        }catch(IOException e) {
-            System.out.println("Fehler: " + e.getMessage());
-        }
     }
 }

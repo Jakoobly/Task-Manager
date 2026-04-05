@@ -3,43 +3,25 @@ import TaskManager.exception.InvalidIndexException;
 import TaskManager.exception.InvalidTitleException;
 import TaskManager.model.Priority;
 import TaskManager.model.Task;
+import TaskManager.persistance.TaskFileService;
 import TaskManager.service.TaskManager;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 
-// TODO: Einheitliche Ausgaben bei Erfolg / Misserfolg
-// TODO: Danach GUI mit JavaFX anfangen
+// TODO: GUI mit JavaFX anfangen
 
 public class ConsoleUI {
     private final TaskManager taskManager;
+    private TaskFileService fileService;
 
-    public ConsoleUI(TaskManager taskManager){
+    public ConsoleUI(TaskManager taskManager, TaskFileService taskFileService){
         this.taskManager = taskManager;
+        this.fileService = taskFileService;
     }
 
     private final Scanner scanner = new Scanner(System.in);
-
-    private void waitForEnter(){
-        System.out.println();
-        System.out.println("Weiter mit Enter...");
-        scanner.nextLine();
-    }
-
-    private void noTasksAndOutput(){
-        System.out.println("Keine Tasks vorhanden");
-        waitForEnter();
-    }
-
-    private int readInt(){
-        while (!scanner.hasNextInt()) {
-            System.out.println("Bitte eine Zahl eingeben.");
-            scanner.nextLine();
-        }
-        int value = scanner.nextInt();
-        scanner.nextLine();
-        return value;
-    }
 
     public void runMenu(){
         while (true){
@@ -97,6 +79,27 @@ public class ConsoleUI {
         }
     }
 
+    private void waitForEnter(){
+        System.out.println();
+        System.out.println("Weiter mit Enter...");
+        scanner.nextLine();
+    }
+
+    private void noTasksAndOutput(){
+        System.out.println("Keine Tasks vorhanden");
+        waitForEnter();
+    }
+
+    private int readInt(){
+        while (!scanner.hasNextInt()) {
+            System.out.println("Bitte eine Zahl eingeben.");
+            scanner.nextLine();
+        }
+        int value = scanner.nextInt();
+        scanner.nextLine();
+        return value;
+    }
+
     private void addTask(){
         System.out.println("Titel: ");
         String title = scanner.nextLine();
@@ -121,40 +124,37 @@ public class ConsoleUI {
         System.out.println("Bitte den Index der Task eingeben");
         int index = readInt();
 
-        if(index > taskManager.getUnfinishedTasks().size()){
-            System.out.println("Dieser Index existiert nicht!");
-            waitForEnter();
-            return;
-        }
+        try {
+            Task task = taskManager.getTask(index);
 
-        System.out.println("Was möchten Sie verändern?");
-        System.out.println("------------------------------");
-        System.out.println("1 - Task abhaken");
-        System.out.println("2 - Titel ändern");
+            if (task.isDone()) {
+                System.out.println("Diese Task ist bereits erledigt.");
+                waitForEnter();
+                return;
+            }
 
-        int input = readInt();
+            System.out.println("Was möchten Sie verändern?");
+            System.out.println("------------------------------");
+            System.out.println("1 - Task abhaken");
+            System.out.println("2 - Titel ändern");
 
-        if(input == 1){
-            try{
+            int input = readInt();
+
+            if(input == 1){
                 taskManager.toggle(index);
-            }catch(InvalidIndexException e){
-                System.out.println("Fehler: " + e.getMessage());
-            }finally {
-                waitForEnter();
-            }
-        }else if(input == 2){
-            System.out.println("Neuen Titel eingeben: ");
-            String title = scanner.nextLine();
-            try{
+                System.out.println("Task abgehakt!");
+            } else if(input == 2){
+                System.out.println("Neuen Titel eingeben: ");
+                String title = scanner.nextLine();
                 taskManager.changeTitle(index, title);
-            }catch(InvalidTitleException | InvalidIndexException e){
-                System.out.println("Fehler: " + e.getMessage());
-            } finally {
-                waitForEnter();
+                System.out.println("Neuer Titel festgelegt!");
+            } else {
+                System.out.println("Fehlerhafte Eingabe");
             }
-        }
-        else{
-            System.out.println("Fehlerhafte Eingabe");
+
+        } catch(InvalidIndexException | InvalidTitleException e){
+            System.out.println("Fehler: " + e.getMessage());
+        } finally {
             waitForEnter();
         }
     }
@@ -167,6 +167,7 @@ public class ConsoleUI {
 
         try{
             taskManager.deleteTask(index);
+            System.out.println("Task erfolgreich gelöscht!");
         }catch(IllegalArgumentException e){
             System.out.println("Fehler: " + e.getMessage());
         }finally {
@@ -203,5 +204,15 @@ public class ConsoleUI {
         if(!found){
             System.out.println("Keine unerledigten Tasks offen");
         }
+    }
+
+    public void safeUnfinishedTasks(){
+        try{
+            fileService.saveTasksToFile(taskManager.getUnfinishedTasks(), "Tasks.txt");
+            System.out.println("Tasks gespeichert");
+        }catch(IOException e){
+            System.out.println("Fehler beim Speichern: " + e.getMessage());
+        }
+        waitForEnter();
     }
 }
