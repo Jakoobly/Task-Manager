@@ -2,6 +2,7 @@
 
 A simple Java console application to manage tasks.  
 Built to practice object-oriented programming concepts.
+Right now working on a simple GUI with Maven and JavaFX.
 
 ---
 
