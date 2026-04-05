@@ -18,11 +18,18 @@ Right now working on a simple GUI with Maven and JavaFX.
 
 ---
 
-## 🛠️ Technologies
+## 🛠️ Tech Stack
 
-- Java  
-- IntelliJ IDEA  
-- Git  
+**Languages & Frameworks**
+- Java
+- JavaFX
+
+**Build Tools**
+- Maven
+
+**Tools**
+- IntelliJ IDEA
+- Git
 
 ---
 
