@@ -48,33 +48,26 @@ public class TaskManager {
         getTask(index).setTitle(title);
     }
 
-    // druckt alle vorhandenen Tasks aus
-    public void printAllTasks(){
-        if(tasksList.isEmpty()){
-            System.out.println("Die Liste ist leer");
-        }else{
-            for(int i= 0; i < tasksList.size(); i++){
-                System.out.println((i + 1) + " - " + tasksList.get(i));
-            }
-        }
+    // alle Tasks als neue Liste zurückgeben
+    public List<Task> getAllTasks() {
+        return new ArrayList<>(tasksList);
     }
 
-    // druckt nur die noch vorhandenen Tasks aus
-    public void printUnfinishedTasks(){
-        for(Task task : tasksList){
-            if(!task.isDone()){
-                System.out.println(task);
-            }
+    // Task verschieben (von altem Index zu neuem Index)
+    public void moveTask(int fromIndex, int toIndex){
+        if(fromIndex < 1 || fromIndex > tasksList.size()
+        || toIndex < 1 || toIndex > tasksList.size()){
+            throw new IllegalArgumentException("Ungültiger Index");
         }
+        Task task = tasksList.remove(fromIndex -1);
+        tasksList.add(toIndex -1, task);
     }
 
     // druckt nur Tasks mit hoher Priorität aus
-    public void printHighPriority(){
-        for(Task task : tasksList){
-            if(task.getPriority() == Priority.HIGH){
-                System.out.println(task);
-            }
-        }
+    public List<Task> getHighPriorityTasks(){
+        return tasksList.stream()
+                .filter(task -> task.getPriority() == Priority.HIGH)
+                .collect(Collectors.toList());
     }
 
     // gibt eine neue Liste mit allen noch offenen Tasks zurück

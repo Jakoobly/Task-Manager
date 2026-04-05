@@ -5,7 +5,11 @@ import TaskManager.model.Priority;
 import TaskManager.model.Task;
 import TaskManager.service.TaskManager;
 
+import java.util.List;
 import java.util.Scanner;
+
+// TODO: Einheitliche Ausgaben bei Erfolg / Misserfolg
+// TODO: Danach GUI mit JavaFX anfangen
 
 public class ConsoleUI {
     private final TaskManager taskManager;
@@ -39,8 +43,9 @@ public class ConsoleUI {
 
     public void runMenu(){
         while (true){
-            System.out.println("Willkommen im Menü");
-            System.out.println("Welche Aktion möchten Sie durchführen");
+            System.out.println("------------------------------");
+            System.out.println("Willkommen im Menü!");
+            System.out.println("Welche Aktion möchten Sie durchführen?");
             System.out.println("------------------------------");
             System.out.println("1 - neue Task anlegen");
             System.out.println("2 - vorhandene Task bearbeiten");
@@ -48,6 +53,7 @@ public class ConsoleUI {
             System.out.println("4 - alle Tasks ausgeben");
             System.out.println("5 - nur offene Tasks ausgeben");
             System.out.println("6 - Menü verlassen");
+            System.out.println("------------------------------");
 
             int input = readInt();
 
@@ -70,7 +76,7 @@ public class ConsoleUI {
                     noTasksAndOutput();
                 }else{
                     System.out.println("Tasks:");
-                    taskManager.printAllTasks();
+                    printTasks();
                     waitForEnter();
                 }
             }else if(input == 5){
@@ -78,7 +84,7 @@ public class ConsoleUI {
                     noTasksAndOutput();
                 }else{
                     System.out.println("Tasks:");
-                    taskManager.printUnfinishedTasks();
+                    printUnfinishedTasks();
                     waitForEnter();
                 }
             }else if(input == 6){
@@ -111,9 +117,16 @@ public class ConsoleUI {
 
     private void editTask(){
         System.out.println("Tasks:");
-        taskManager.printAllTasks();
+        printUnfinishedTasks();
         System.out.println("Bitte den Index der Task eingeben");
         int index = readInt();
+
+        if(index > taskManager.getUnfinishedTasks().size()){
+            System.out.println("Dieser Index existiert nicht!");
+            waitForEnter();
+            return;
+        }
+
         System.out.println("Was möchten Sie verändern?");
         System.out.println("------------------------------");
         System.out.println("1 - Task abhaken");
@@ -134,11 +147,9 @@ public class ConsoleUI {
             String title = scanner.nextLine();
             try{
                 taskManager.changeTitle(index, title);
-            }catch(InvalidTitleException e){
+            }catch(InvalidTitleException | InvalidIndexException e){
                 System.out.println("Fehler: " + e.getMessage());
-            }catch(InvalidIndexException e){
-                System.out.println("Fehler: " + e.getMessage());
-            }finally {
+            } finally {
                 waitForEnter();
             }
         }
@@ -150,7 +161,7 @@ public class ConsoleUI {
 
     private void deleteTask(){
         System.out.println("Tasks:");
-        taskManager.printAllTasks();
+        printTasks();
         System.out.println("Bitte Index der Task eingeben");
         int index = readInt();
 
@@ -160,6 +171,37 @@ public class ConsoleUI {
             System.out.println("Fehler: " + e.getMessage());
         }finally {
             waitForEnter();
+        }
+    }
+
+    private void printTasks(){
+        List<Task> tasks = taskManager.getAllTasks();
+
+        if(tasks.isEmpty()){
+            System.out.println("Die Liste ist leer");
+        }else{
+            for(int i= 0; i < tasks.size(); i++){
+                System.out.println((i + 1) + " - " + tasks.get(i));
+            }
+        }
+    }
+
+    private void printUnfinishedTasks(){
+        List<Task> allTasks = taskManager.getAllTasks();
+
+        boolean found = false;
+
+        for(int i = 0; i < allTasks.size(); i++){
+            Task task = allTasks.get(i);
+
+            if(!task.isDone()){
+                System.out.println((i + 1) + " - " + task);
+                found = true;
+            }
+        }
+
+        if(!found){
+            System.out.println("Keine unerledigten Tasks offen");
         }
     }
 }
