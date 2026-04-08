@@ -5,9 +5,6 @@ import TaskManager.exception.InvalidTitleException;
 import TaskManager.model.Priority;
 import TaskManager.model.Task;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -37,6 +34,20 @@ public class TaskManager {
     public void deleteTask(int index) throws IllegalArgumentException{
         Task task = getTask(index);
         tasksList.remove(task);
+    }
+
+    // deleteTask für GUI
+    public void deleteTask(Task task){
+        tasksList.remove(task);
+    }
+
+    // updateTask für GUI
+    public void updateTask(Task task, String newTitle, Priority newPriority){
+        if(task == null){
+            throw new IllegalArgumentException("Bitte eine Task auswählen");
+        }
+        task.setTitle(newTitle);
+        task.setPriority(newPriority);
     }
 
     // ändert den Zustand (erledigt / noch offen)

@@ -14,7 +14,7 @@ import java.util.Scanner;
 
 public class ConsoleUI {
     private final TaskManager taskManager;
-    private TaskFileService fileService;
+    private final TaskFileService fileService;
 
     public ConsoleUI(TaskManager taskManager, TaskFileService taskFileService){
         this.taskManager = taskManager;
@@ -206,7 +206,7 @@ public class ConsoleUI {
         }
     }
 
-    public void safeUnfinishedTasks(){
+    public void saveUnfinishedTasks(){
         try{
             fileService.saveTasksToFile(taskManager.getUnfinishedTasks(), "Tasks.txt");
             System.out.println("Tasks gespeichert");

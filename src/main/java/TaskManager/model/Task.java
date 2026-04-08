@@ -35,6 +35,13 @@ public class Task {
         this.title = title;
     }
 
+    public void setPriority(Priority priority){
+        if(priority == null){
+            throw new InvalidPriorityException("Priorität dasrf nicht leer sein!");
+        }
+        this.priority = priority;
+    }
+
     public boolean isDone(){
         return done;
     }
