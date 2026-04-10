@@ -1,6 +1,7 @@
 package TaskManager.service;
 
 import TaskManager.exception.InvalidIndexException;
+import TaskManager.exception.InvalidPriorityException;
 import TaskManager.exception.InvalidTitleException;
 import TaskManager.model.Priority;
 import TaskManager.model.Task;
@@ -55,6 +56,7 @@ public class TaskManager {
         getTask(index).toggleDone();
     }
 
+    // Change title für das CLI
     public void changeTitle(int index, String title) throws InvalidIndexException, InvalidTitleException {
         getTask(index).setTitle(title);
     }
