@@ -87,6 +87,6 @@ public class Task {
 
     @Override
     public String toString(){
-        return getStatusIcon() + " " + getTitle() + ", Priority: " + getPriority();
+        return getStatusIcon() + " " + getTitle() + ", Priority: " + getPriority() + ", Category: " + getCategory();
     }
 }

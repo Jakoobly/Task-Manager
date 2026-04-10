@@ -1,6 +1,7 @@
 package TaskManager.ui;
 import TaskManager.exception.InvalidIndexException;
 import TaskManager.exception.InvalidTitleException;
+import TaskManager.model.Category;
 import TaskManager.model.Priority;
 import TaskManager.model.Task;
 import TaskManager.persistance.TaskFileService;
@@ -10,7 +11,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 
-// TODO: GUI mit JavaFX anfangen
+// TODO: GUI mit JavaFX weiterentwickeln
 
 public class ConsoleUI {
     private final TaskManager taskManager;
@@ -108,7 +109,12 @@ public class ConsoleUI {
             System.out.println("Priorität (LOW, MEDIUM, HIGH): ");
             String input = scanner.nextLine();
             Priority priority = Priority.valueOf(input.toUpperCase());
-            Task task = new Task(title, priority);
+
+            System.out.println("Kategorie: ");
+            String categoryInput = scanner.nextLine();
+            Category category = new Category(categoryInput);
+
+            Task task = new Task(title, priority, category);
             taskManager.addTask(task);
 
             System.out.println("Task erstellt!");
@@ -137,6 +143,7 @@ public class ConsoleUI {
             System.out.println("------------------------------");
             System.out.println("1 - Task abhaken");
             System.out.println("2 - Titel ändern");
+            System.out.println("3 - Kategorie ändern");
 
             int input = readInt();
 
@@ -148,11 +155,17 @@ public class ConsoleUI {
                 String title = scanner.nextLine();
                 taskManager.changeTitle(index, title);
                 System.out.println("Neuer Titel festgelegt!");
+            } else if(input == 3){
+                System.out.println("Neue Kategorie eingeben: ");
+                String categoryInput = scanner.nextLine();
+                Category category = new Category(categoryInput);
+                task.setCategory(category);
+                System.out.println("Neue Kategorie festgelegt!");
             } else {
                 System.out.println("Fehlerhafte Eingabe");
             }
 
-        } catch(InvalidIndexException | InvalidTitleException e){
+        } catch(InvalidIndexException | InvalidTitleException | IllegalArgumentException e){
             System.out.println("Fehler: " + e.getMessage());
         } finally {
             waitForEnter();
