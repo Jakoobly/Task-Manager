@@ -1,7 +1,6 @@
 package TaskManager.service;
 
 import TaskManager.exception.InvalidIndexException;
-import TaskManager.exception.InvalidPriorityException;
 import TaskManager.exception.InvalidTitleException;
 import TaskManager.model.Priority;
 import TaskManager.model.Task;
@@ -11,10 +10,15 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+// Todo: DateTime verwenden
+
+
 public class TaskManager {
     private final List<Task> tasksList = new ArrayList<>();
+    private int finishedTasksCount;
+    private int unfinishedTasksCount;
 
-    // fügt eine Tast hinzu
+    // fügt eine Task hinzu
     public void addTask(Task task){
         tasksList.add(task);
     }
@@ -83,13 +87,6 @@ public class TaskManager {
                 .collect(Collectors.toList());
     }
 
-    // gibt eine neue Liste mit allen noch offenen Tasks zurück
-    public List<Task> getUnfinishedTasks(){
-        return tasksList.stream()
-                .filter(task -> !task.isDone())
-                .collect(Collectors.toList());
-    }
-
     // gibt eine neue Liste mit sortierten Tasks zurück (Low -> High & dann nach Titel)
     public List<Task> getTasksSortedByPriority(){
         return tasksList.stream()
@@ -99,10 +96,46 @@ public class TaskManager {
                 .collect(Collectors.toList());
     }
 
+    // gibt eine neue Liste mit allen noch offenen Tasks zurück
+    public List<Task> getUnfinishedTasks(){
+        return tasksList.stream()
+                .filter(task -> !task.isDone())
+                .collect(Collectors.toList());
+    }
+
     // zählt noch offene Tasks
     public long countUnfinishedTasks(){
         return tasksList.stream()
                 .filter(task -> !task.isDone())
                 .count();
+    }
+
+    // zählt abgeschlossene Tasks
+    public long countFinishedTasks(){
+        return tasksList.stream()
+                .filter(Task::isDone)
+                .count();
+    }
+
+    // berechnet den Fortschritt in Prozent
+    public double getProgressInPercent(){
+        if(tasksList.isEmpty()){
+            return 0.0;
+        }
+        return ((double) countFinishedTasks() / tasksList.size()) * 100;
+    }
+
+    // gibt eine Liste sortiert nach Erstelldatum zurück
+    public List<Task> getTasksByDateAsc(){
+        return tasksList.stream()
+                .sorted(Comparator.comparing(Task::getCreatedAt))
+                .collect(Collectors.toList());
+    }
+
+    // gibt eine Liste sortiert nach Erstelldatum zurück reversed
+    public List<Task> getTasksByDateDesc(){
+        return tasksList.stream()
+                .sorted(Comparator.comparing(Task::getCreatedAt).reversed())
+                .collect(Collectors.toList());
     }
 }

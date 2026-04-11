@@ -4,12 +4,15 @@ import TaskManager.exception.InvalidCategoryException;
 import TaskManager.exception.InvalidPriorityException;
 import TaskManager.exception.InvalidTitleException;
 
+import java.time.LocalDateTime;
+
 public class Task {
     private String title;
     private boolean done;
     private Priority priority;
     private Category category;
     private static final int MAX_TITLE_LENGTH = 100;
+    private LocalDateTime createdAt;
 
     public Task(String title){
         this(title, Priority.LOW);
@@ -31,6 +34,7 @@ public class Task {
         this.priority = priority;
         this.category = category;
         this.done = false;
+        this.createdAt = LocalDateTime.now();
     }
 
     private void validateTitle(String title){
@@ -83,6 +87,10 @@ public class Task {
 
     public void toggleDone(){
         done = !done;
+    }
+
+    public LocalDateTime getCreatedAt(){
+        return createdAt;
     }
 
     @Override
