@@ -1,10 +1,18 @@
 package TaskManager.model;
 
 import TaskManager.exception.InvalidCategoryException;
+import TaskManager.exception.InvalidIndexException;
 import TaskManager.exception.InvalidPriorityException;
 import TaskManager.exception.InvalidTitleException;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+// Todo: Methoden implementieren, um Subtask zu verändern etc.
+// Todo: Logik überlegen wie mit Fortschritt von Task / Subtask umgegangen wird -> Kombinieren?
+// Todo: CLI Ausgabe Subtasks integrieren
 
 public class Task {
     private String title;
@@ -13,6 +21,9 @@ public class Task {
     private Category category;
     private static final int MAX_TITLE_LENGTH = 100;
     private LocalDateTime createdAt;
+
+    private List<Subtask> subtasks;
+
 
     public Task(String title){
         this(title, Priority.LOW);
@@ -91,6 +102,42 @@ public class Task {
 
     public LocalDateTime getCreatedAt(){
         return createdAt;
+    }
+
+
+
+    // fügt eine Subtask einer Task hinzu
+    public void addSubtask(Subtask subtask){
+        if(subtask == null){
+            throw new IllegalArgumentException("Subtask darf nicht null sein");
+        }
+        subtasks.add(subtask);
+    }
+
+    // löscht eine Subtask einer Task
+    public void removeSubtask(int index){
+        if(subtasks.isEmpty() || index < 1 || index > subtasks.size()){
+            throw new InvalidIndexException("Dieser Index existiert nicht");
+        }
+        subtasks.remove(index - 1);
+    }
+
+    // gibt eine NEUE subtask-Liste zurück
+    public List<Subtask> getSubtasks(){
+        return new ArrayList<>(subtasks);
+    }
+
+    public long countFinishedSubtasks(){
+        return subtasks.stream()
+                .filter(Subtask::isDone)
+                .count();
+    }
+
+    public double getProgressInPercent(){
+        if(subtasks.isEmpty()){
+            return 0.0;
+        }
+        return ((double) countFinishedSubtasks() / subtasks.size()) * 100;
     }
 
     @Override
