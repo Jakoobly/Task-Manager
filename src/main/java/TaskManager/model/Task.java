@@ -8,7 +8,6 @@ import TaskManager.exception.InvalidTitleException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 // Todo: Methoden implementieren, um Subtask zu verändern etc.
 // Todo: Logik überlegen wie mit Fortschritt von Task / Subtask umgegangen wird -> Kombinieren?
@@ -22,7 +21,7 @@ public class Task {
     private static final int MAX_TITLE_LENGTH = 100;
     private LocalDateTime createdAt;
 
-    private List<Subtask> subtasks;
+    private final List<Subtask> subtasks = new ArrayList<>();
 
 
     public Task(String title){
@@ -114,12 +113,17 @@ public class Task {
         subtasks.add(subtask);
     }
 
-    // löscht eine Subtask einer Task
+    // löscht eine Subtask einer Task (CLI)
     public void removeSubtask(int index){
         if(subtasks.isEmpty() || index < 1 || index > subtasks.size()){
             throw new InvalidIndexException("Dieser Index existiert nicht");
         }
         subtasks.remove(index - 1);
+    }
+
+    // löscht eine Subtask einer Task (GUI)
+    public void removeSubtask(Subtask subtask){
+        subtasks.remove(subtask);
     }
 
     // gibt eine NEUE subtask-Liste zurück
@@ -138,6 +142,25 @@ public class Task {
             return 0.0;
         }
         return ((double) countFinishedSubtasks() / subtasks.size()) * 100;
+    }
+
+    public Subtask getSubtask(int index){
+        if(index < 1 || index > subtasks.size()){
+            throw new InvalidIndexException("Ungültiger Index!");
+        }
+        return subtasks.get(index - 1);
+    }
+
+    public void changeTitle(int index, String title) throws InvalidIndexException, InvalidTitleException {
+        getSubtask(index).setTitle(title);
+    }
+
+    public void updateSubtask(Subtask subtask, String newTitle, boolean newDone){
+        if(subtask == null){
+            throw new IllegalArgumentException("Bitte eine Task auswählen");
+        }
+        subtask.setTitle(newTitle);
+        subtask.setDone(newDone);
     }
 
     @Override

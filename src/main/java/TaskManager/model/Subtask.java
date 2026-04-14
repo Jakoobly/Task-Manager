@@ -35,7 +35,16 @@ public class Subtask {
         return done;
     }
 
+    public void setDone(boolean done){
+        this.done = done;
+    }
+
     public void toggleDone(){
         done = !done;
+    }
+
+    @Override
+    public String toString(){
+        return "Title: " + getTitle() + ", done: " + isDone();
     }
 }
