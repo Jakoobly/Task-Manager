@@ -14,9 +14,7 @@ import java.util.stream.Collectors;
 
 
 public class TaskManager {
-    private final List<Task> tasksList = new ArrayList<>();
-    private int finishedTasksCount;
-    private int unfinishedTasksCount;
+    private final List<Task> tasksList = new ArrayList<>();;
 
     // fügt eine Task hinzu
     public void addTask(Task task){
@@ -36,7 +34,7 @@ public class TaskManager {
     }
 
     // löscht eine Task basierend auf dem Index
-    public void deleteTask(int index) throws IllegalArgumentException{
+    public void deleteTask(int index) throws InvalidIndexException{
         Task task = getTask(index);
         tasksList.remove(task);
     }

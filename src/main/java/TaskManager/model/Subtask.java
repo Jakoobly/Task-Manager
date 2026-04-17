@@ -9,7 +9,7 @@ public class Subtask {
 
     public Subtask(String title){
         validateTitle(title);
-        this.title = title;
+        this.title = title.trim();
         this.done = false;
     }
 
@@ -28,7 +28,7 @@ public class Subtask {
 
     public void setTitle(String title){
         validateTitle(title);
-        this.title = title;
+        this.title = title.trim();
     }
 
     public boolean isDone(){

@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-// Todo: Methoden implementieren, um Subtask zu verändern etc.
 // Todo: Logik überlegen wie mit Fortschritt von Task / Subtask umgegangen wird -> Kombinieren?
 // Todo: CLI Ausgabe Subtasks integrieren
 
@@ -87,16 +86,28 @@ public class Task {
         return category;
     }
 
+
     public boolean isDone(){
-        return done;
+        if (subtasks.isEmpty()){
+            return done;
+        }
+        return subtasks.stream().allMatch(Subtask::isDone);
     }
 
     public String getStatusIcon(){
-        return done ? "[✓]" : "[ ]";
+        return isDone() ? "[✓]" : "[ ]";
     }
 
     public void toggleDone(){
-        done = !done;
+        if(subtasks.isEmpty()){
+            done = !done;
+        } else {
+            boolean allDone = subtasks.stream().allMatch(Subtask::isDone);
+            for (Subtask subtask: subtasks){
+                subtask.setDone(!allDone);
+            }
+        }
+
     }
 
     public LocalDateTime getCreatedAt(){
@@ -123,6 +134,9 @@ public class Task {
 
     // löscht eine Subtask einer Task (GUI)
     public void removeSubtask(Subtask subtask){
+        if(subtask == null || !subtasks.contains(subtask)){
+            throw new IllegalArgumentException("Subtask nicht vorhanden");
+        }
         subtasks.remove(subtask);
     }
 
@@ -157,7 +171,7 @@ public class Task {
 
     public void updateSubtask(Subtask subtask, String newTitle, boolean newDone){
         if(subtask == null){
-            throw new IllegalArgumentException("Bitte eine Task auswählen");
+            throw new IllegalArgumentException("Bitte eine Subtask auswählen");
         }
         subtask.setTitle(newTitle);
         subtask.setDone(newDone);
