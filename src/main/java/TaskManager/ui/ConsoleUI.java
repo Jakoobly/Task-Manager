@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Scanner;
 
 // TODO: GUI mit JavaFX weiterentwickeln
-// Todo: DateTime verwenden
+// Todo: SubTasks integrieren
 
 public class ConsoleUI {
     private final TaskManager taskManager;

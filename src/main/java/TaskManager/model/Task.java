@@ -6,6 +6,7 @@ import TaskManager.exception.InvalidPriorityException;
 import TaskManager.exception.InvalidTitleException;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -177,8 +178,13 @@ public class Task {
         subtask.setDone(newDone);
     }
 
+    public String getFormattedCreatedAt() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+        return createdAt.format(formatter);
+    }
+
     @Override
     public String toString(){
-        return getStatusIcon() + " " + getTitle() + ", Priority: " + getPriority() + ", Category: " + getCategory();
+        return getStatusIcon() + " " + getTitle() + ", Priority: " + getPriority() + ", Category: " + getCategory() + ", Time: " + getFormattedCreatedAt();
     }
 }
