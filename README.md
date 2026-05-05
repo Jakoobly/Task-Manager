@@ -3,6 +3,8 @@
 A Java-based task management application built to practice **object-oriented programming (OOP)** concepts.  
 The project includes both a **console interface** and a **JavaFX GUI (in progress)**.
 
+**Currently not working on the project due to uni and my student job at Mercedes-Benz AG**
+
 ---
 
 ## ✨ Features
